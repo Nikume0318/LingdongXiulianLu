@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>灵动修炼录 | 洞府修炼养成</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-active-view="dashboard">
+    <div class="app-shell game-shell single-scene">
+      <main class="main-content realm-stage" aria-label="灵动修炼录洞府">
+        <section class="view is-active game-view cave-view" id="dashboard" aria-labelledby="dashboard-title">
+          <img class="stage-bg" src="./assets/images/hero-cave-v5.png" alt="校园洞府修炼场景" />
+          <div class="stage-vignette" aria-hidden="true"></div>
+          <div class="stage-orbit" aria-hidden="true"></div>
+
+          <header class="top-hud" aria-label="洞府状态">
+            <div class="brand">
+              <div class="brand-mark" aria-hidden="true">灵</div>
+              <div>
+                <p class="eyebrow">洞府中枢</p>
+                <h1>灵动修炼录</h1>
+              </div>
+            </div>
+
+            <div class="hud-strip">
+              <div>
+                <span class="stat-label">境界</span>
+                <strong id="realmValue">练气一层</strong>
+              </div>
+              <div>
+                <span class="stat-label">灵石</span>
+                <strong id="stonesValue">0</strong>
+              </div>
+              <div>
+                <span class="stat-label">体魄</span>
+                <strong id="physiqueValue">体魄 0</strong>
+              </div>
+              <div>
+                <span class="stat-label">连续入定</span>
+                <strong><span id="heroStreak">0</span> 天</strong>
+              </div>
+            </div>
+
+            <button class="ghost-button" type="button" id="resetDemoButton">重置档案</button>
+          </header>
+
+          <section class="scene-panel cave-stage">
+            <div class="scene-avatar protagonist-stage">
+              <div class="avatar-glow" aria-hidden="true"></div>
+              <div class="avatar-realm-ring" aria-hidden="true">
+                <span id="protagonistRealmSeal">炼</span>
+              </div>
+              <img class="character-art" id="characterArt" src="./assets/images/cultivator-male-v5.png" alt="大学生修士立绘" />
+              <div class="character-choice-strip" aria-label="主角命形选择">
+                <button class="character-choice is-active" type="button" data-character-gender="male" aria-pressed="true">
+                  <img src="./assets/images/cultivator-male-v5.png" alt="" />
+                  <span>男修</span>
+                </button>
+                <button class="character-choice" type="button" data-character-gender="female" aria-pressed="false">
+                  <img src="./assets/images/cultivator-female-v5.png" alt="" />
+                  <span>女修</span>
+                </button>
+              </div>
+              <div class="avatar-caption">
+                <p class="eyebrow">命格化身</p>
+                <h3 id="characterName">校园修士</h3>
+                <div class="mini-stats">
+                  <span id="characterRealmLine">练气一层 · 男修</span>
+                  <span id="techniqueValue">青云吐纳诀</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="scene-copy daily-ritual-card">
+              <p class="eyebrow">今日修炼</p>
+              <h2 id="dashboard-title">今日洞府</h2>
+              <h3 id="heroGreeting">准备开启今日修炼</h3>
+              <p id="heroSummary">入定一次，即可引动修为、灵石与体魄成长。</p>
+              <div class="scene-actions">
+                <button class="primary-button primary-action" type="button" data-jump-view="checkin">入阵修炼</button>
+                <button class="secondary-button" type="button" data-jump-view="records">翻阅卷宗</button>
+              </div>
+              <div class="novice-guide" id="noviceGuide" aria-label="入门引路">
+                <div class="novice-guide-copy">
+                  <span id="noviceGuideSeal" aria-hidden="true">引</span>
+                  <div>
+                    <small>入门引路</small>
+                    <strong id="noviceGuideTitle">先入阵，完成第一次收功</strong>
+                    <p id="noviceGuideSummary">按下入阵修炼，完成一次 20 分钟运功，即可获得第一份修为和仙缘。</p>
+                  </div>
+                </div>
+                <ol class="novice-steps" id="noviceGuideSteps"></ol>
+                <button class="secondary-button guide-action" type="button" id="noviceGuideAction">开始第一次入阵</button>
+              </div>
+            </div>
+
+            <aside class="realm-orb realm-orb-secondary">
+              <img id="dashboardRealmBadgeImage" src="./assets/images/realm-qi-v3.png" alt="当前境界徽章" />
+              <small>灵脉共鸣</small>
+            </aside>
+          </section>
+
+          <section class="cave-hud" aria-label="洞府主界面">
+            <article class="panel hud-panel realm-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">境界灵脉</p>
+                  <h3>境界灵脉</h3>
+                </div>
+              </div>
+              <div class="realm-status">
+                <img id="realmPanelBadgeImage" src="./assets/images/realm-qi-v3.png" alt="境界徽章" />
+                <div>
+                  <span class="stat-label">下一次破境</span>
+                  <strong id="realmProgressText">0 / 100 修为</strong>
+                </div>
+              </div>
+              <div class="progress-track">
+                <span id="realmProgressBar"></span>
+              </div>
+              <div class="resource-grid">
+                <div>
+                  <span class="stat-label">本周历练</span>
+                  <strong id="weeklyCountValue">0 次</strong>
+                  <small id="weeklyMinutesValue">累计 0 分钟</small>
+                </div>
+                <div>
+                  <span class="stat-label">仙缘</span>
+                  <strong id="fateCountValue">0 / 9</strong>
+                  <small>机缘收录</small>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel hud-panel quest-panel scroll-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">今日卷令</p>
+                  <h3>今日卷轴</h3>
+                </div>
+              </div>
+              <div class="task-list" id="taskList"></div>
+            </article>
+          </section>
+
+          <section class="adventure-grid" aria-label="洞府历练入口">
+            <article class="panel hud-panel sect-panel" aria-labelledby="sect-title">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">宗门周常</p>
+                  <h3 id="sect-title">宗门委托</h3>
+                </div>
+                <div class="sect-rank">
+                  <span id="sectRankValue">外门弟子</span>
+                  <strong id="sectContributionValue">0 贡献</strong>
+                </div>
+              </div>
+              <div class="progress-track sect-progress">
+                <span id="sectProgressBar"></span>
+              </div>
+              <p class="system-copy" id="sectSummary">完成本周委托可提升宗门贡献，形成更稳定的修炼节奏。</p>
+              <div class="sect-mission-list" id="sectMissionList"></div>
+            </article>
+
+            <article class="panel hud-panel dungeon-panel" aria-labelledby="dungeon-title">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">云阶副本</p>
+                  <h3 id="dungeon-title">云阶试炼</h3>
+                </div>
+                <div class="dungeon-grade" id="dungeonGradeValue">未入阵</div>
+              </div>
+              <div class="dungeon-core">
+                <div class="dungeon-seal" aria-hidden="true">阵</div>
+                <div>
+                  <strong id="dungeonNameValue">云阶试炼</strong>
+                  <p id="dungeonSummary">完成宗门委托即可推进本周副本清剿。</p>
+                </div>
+              </div>
+              <div class="progress-track dungeon-progress">
+                <span id="dungeonProgressBar"></span>
+              </div>
+              <div class="dungeon-stage-list" id="dungeonStageList"></div>
+            </article>
+
+            <article class="panel hud-panel demon-panel" aria-labelledby="demon-title">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">心魔试炼</p>
+                  <h3 id="demon-title">今日心魔</h3>
+                </div>
+                <div class="demon-threat" id="demonThreatValue">低威胁</div>
+              </div>
+              <div class="demon-core">
+                <div class="demon-orb" aria-hidden="true">心</div>
+                <div>
+                  <strong id="demonNameValue">拖延心魔</strong>
+                  <p id="demonSummary">入定一次即可压制今日心魔。</p>
+                </div>
+              </div>
+              <div class="progress-track demon-progress">
+                <span id="demonProgressBar"></span>
+              </div>
+              <div class="demon-trial-list" id="demonTrialList"></div>
+            </article>
+
+            <article class="panel hud-panel story-panel" aria-labelledby="story-title">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">篇章进度</p>
+                  <h3 id="story-title">修炼篇章</h3>
+                </div>
+                <div class="story-tag" id="storyTagValue">序章</div>
+              </div>
+              <div class="story-core">
+                <div class="story-seal" aria-hidden="true">章</div>
+                <div>
+                  <strong id="storyNameValue">洞府初启</strong>
+                  <p id="storySummary">完成第一次修炼，开启你的校园修仙旅程。</p>
+                </div>
+              </div>
+              <div class="progress-track story-progress">
+                <span id="storyProgressBar"></span>
+              </div>
+              <div class="story-chapter-list" id="storyChapterList"></div>
+            </article>
+          </section>
+        </section>
+
+        <section class="view game-view overlay-view ritual-view" id="checkin" aria-labelledby="checkin-title">
+          <div class="overlay-backdrop" data-close-overlay></div>
+          <div class="overlay-panel ritual-drawer">
+            <div class="page-heading ritual-heading">
+              <div>
+                <p class="eyebrow">入阵法坛</p>
+                <h2 id="checkin-title">入修炼阵</h2>
+              </div>
+              <button class="ghost-button close-overlay" type="button" data-close-overlay>回洞府</button>
+            </div>
+
+            <form class="checkin-form ritual-panel" id="practiceForm">
+              <div class="ritual-stage" aria-hidden="true">
+                <img src="./assets/images/ritual-stage-v5.png" alt="" />
+                <div class="ritual-ring"></div>
+                <div class="ritual-core">炼</div>
+                <p>周天运转</p>
+              </div>
+
+              <fieldset class="spellbook-panel">
+                <legend>择一门今日功法</legend>
+                <div class="type-grid" id="activityTypeGrid"></div>
+              </fieldset>
+
+              <div class="ritual-controls">
+                <label>
+                  运功时长
+                  <input id="durationInput" type="number" min="5" max="240" step="5" value="20" required />
+                  <span>分钟</span>
+                </label>
+
+                <label>
+                  周天火候
+                  <select id="intensityInput">
+                    <option value="easy">调息</option>
+                    <option value="normal" selected>凝气</option>
+                    <option value="hard">淬体</option>
+                  </select>
+                </label>
+
+                <label class="wide-field">
+                  入定心得
+                  <textarea id="noteInput" rows="4" maxlength="80" placeholder="例如：操场御风三圈，气息比昨天稳了"></textarea>
+                </label>
+              </div>
+
+            </form>
+
+            <div class="form-actions ritual-actions">
+              <button class="primary-button" type="submit" form="practiceForm">收功结算</button>
+              <p id="rewardHint">20 分钟凝气运功，预计牵引 30 修为、24 灵石、20 体魄。</p>
+            </div>
+
+            <section class="ritual-support">
+              <article class="panel hud-panel furnace-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">丹炉火候</p>
+                    <h3>聚气丹炉</h3>
+                  </div>
+                </div>
+                <p class="system-copy" id="pillCopy">有效入定可推进炼丹进度。</p>
+                <div class="progress-track">
+                  <span id="pillProgressBar"></span>
+                </div>
+                <button class="secondary-button" type="button" id="usePillButton">服用聚气丹</button>
+              </article>
+
+              <article class="panel hud-panel technique-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">功法流转</p>
+                    <h3>功法流派</h3>
+                  </div>
+                </div>
+                <div class="technique-list" id="techniqueList"></div>
+              </article>
+
+              <article class="panel hud-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">宗门令牌</p>
+                    <h3>本周令牌</h3>
+                  </div>
+                </div>
+                <p class="system-copy" id="practiceSectSummary">本周委托正在等待修炼记录。</p>
+                <div class="progress-track">
+                  <span id="practiceSectProgressBar"></span>
+                </div>
+                <div class="sect-mini-list" id="practiceSectList"></div>
+              </article>
+
+              <article class="panel hud-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">心魔试炼</p>
+                    <h3>心魔压制</h3>
+                  </div>
+                </div>
+                <p class="system-copy" id="practiceDemonSummary">今日心魔尚未显形。</p>
+                <div class="progress-track">
+                  <span id="practiceDemonProgressBar"></span>
+                </div>
+                <div class="demon-mini-list" id="practiceDemonList"></div>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <section class="view game-view overlay-view records-view" id="records" aria-labelledby="records-title">
+          <div class="overlay-backdrop" data-close-overlay></div>
+          <div class="overlay-panel scroll-drawer">
+            <div class="page-heading">
+              <div>
+                <p class="eyebrow">卷宗开卷</p>
+                <h2 id="records-title">修炼卷宗</h2>
+                <p class="heading-subtitle">每一次收功都会落成一枚卷轴符记，回看时能看见修为、灵石与体魄如何一点点涨起来。</p>
+              </div>
+              <button class="ghost-button close-overlay" type="button" data-close-overlay>回洞府</button>
+            </div>
+
+            <section class="scroll-panel chronicle-scroll">
+              <div class="empty-state" id="emptyRecords">
+                <img src="./assets/images/empty-meditation-v2.png" alt="打坐修炼插图" />
+                <strong>卷宗尚未开篇</strong>
+                <p>第一次收功后，这里会铭刻修为、灵石、体魄与突破轨迹。</p>
+                <button class="primary-button" type="button" data-jump-view="checkin">入阵开篇</button>
+              </div>
+              <div class="record-list chronicle-list" id="recordList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view game-view overlay-view destiny-view" id="profile" aria-labelledby="profile-title">
+          <div class="overlay-backdrop" data-close-overlay></div>
+          <div class="overlay-panel destiny-drawer">
+            <div class="page-heading">
+              <div>
+                <p class="eyebrow">命格收藏</p>
+                <h2 id="profile-title">命格阁</h2>
+                <p class="heading-subtitle">境界、称号、法宝、仙缘与周报都收在这里，像整理自己的修炼藏阁。</p>
+              </div>
+              <button class="ghost-button close-overlay" type="button" data-close-overlay>回洞府</button>
+            </div>
+
+            <section class="destiny-hero">
+              <article class="panel hud-panel profile-card">
+                <img class="realm-badge-large" id="realmBadgeImage" src="./assets/images/realm-qi-v3.png" alt="境界徽章" />
+                <h3 id="profileRealm">练气一层</h3>
+                <div class="profile-title-badge">
+                  <span id="profileTitleSeal">候</span>
+                  <strong id="profileTitleName">候选修士</strong>
+                </div>
+                <p id="profileSummary">累计修炼 0 次，继续打磨你的校园修仙命格。</p>
+              </article>
+
+              <article class="panel hud-panel settings-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">洞府校准</p>
+                    <h3>洞府偏好</h3>
+                  </div>
+                </div>
+                <div class="character-form" aria-label="主角命形">
+                  <div class="character-form-title">
+                    <span aria-hidden="true">形</span>
+                    <div>
+                      <strong>主角命形</strong>
+                      <small>选择洞府化身，并为自己取一个道号。</small>
+                    </div>
+                  </div>
+                  <div class="profile-character-choices">
+                    <button class="character-choice is-active" type="button" data-character-gender="male" aria-pressed="true">
+                      <img src="./assets/images/cultivator-male-v5.png" alt="" />
+                      <span>男修</span>
+                    </button>
+                    <button class="character-choice" type="button" data-character-gender="female" aria-pressed="false">
+                      <img src="./assets/images/cultivator-female-v5.png" alt="" />
+                      <span>女修</span>
+                    </button>
+                  </div>
+                  <label class="preference-row">
+                    修士道号
+                    <input id="nicknameInput" type="text" maxlength="8" placeholder="校园修士" />
+                  </label>
+                </div>
+                <label class="preference-row">
+                  每周历练次数
+                  <input id="weeklyGoalInput" type="number" min="1" max="7" value="3" />
+                </label>
+                <label class="preference-row">
+                  每次目标时长
+                  <input id="dailyGoalInput" type="number" min="5" max="120" step="5" value="20" />
+                </label>
+                <button class="primary-button" type="button" id="savePreferencesButton">保存命格偏好</button>
+              </article>
+            </section>
+
+            <nav class="pavilion-tabs" id="pavilionTabs" aria-label="命格阁层切换">
+              <button class="pavilion-tab is-active" type="button" data-pavilion-tab="report" aria-pressed="true" aria-controls="practiceReportPanel">
+                <span aria-hidden="true">卦</span>
+                <strong>报告</strong>
+              </button>
+              <button class="pavilion-tab" type="button" data-pavilion-tab="title" aria-pressed="false" aria-controls="stageTitlePanel">
+                <span aria-hidden="true">印</span>
+                <strong>称号</strong>
+              </button>
+              <button class="pavilion-tab" type="button" data-pavilion-tab="weekly" aria-pressed="false" aria-controls="weeklyReportPanel">
+                <span aria-hidden="true">书</span>
+                <strong>周报</strong>
+              </button>
+              <button class="pavilion-tab" type="button" data-pavilion-tab="treasure" aria-pressed="false" aria-controls="treasuresPanel">
+                <span aria-hidden="true">宝</span>
+                <strong>法宝</strong>
+              </button>
+              <button class="pavilion-tab" type="button" data-pavilion-tab="fate" aria-pressed="false" aria-controls="fatesPanel">
+                <span aria-hidden="true">缘</span>
+                <strong>仙缘</strong>
+              </button>
+            </nav>
+
+            <section class="pavilion-grid">
+              <article class="panel hud-panel report-panel" id="practiceReportPanel" data-pavilion-panel="report" aria-labelledby="practice-report-title">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">本周卦象</p>
+                    <h3 id="practice-report-title">修炼报告</h3>
+                  </div>
+                  <div class="report-rank">
+                    <span id="practiceReportBadge">启</span>
+                    <strong id="practiceReportState">待开篇</strong>
+                  </div>
+                </div>
+                <div class="report-metrics" id="practiceReportMetrics"></div>
+                <div class="report-highlight">
+                  <span id="practiceReportSeal" aria-hidden="true">策</span>
+                  <div>
+                    <strong id="practiceReportTitle">洞府尚待点火</strong>
+                    <p id="practiceReportSummary">完成第一次修炼后，这里会生成本周表现和下一步建议。</p>
+                  </div>
+                </div>
+                <div class="report-next">
+                  <span>下一步</span>
+                  <strong id="practiceReportAction">先完成一次 5 分钟调息。</strong>
+                </div>
+              </article>
+
+              <article class="panel hud-panel title-panel" id="stageTitlePanel" data-pavilion-panel="title" aria-labelledby="stage-title">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">身份刻印</p>
+                    <h3 id="stage-title">阶段称号</h3>
+                  </div>
+                  <div class="title-count" id="stageTitleCount">0 / 9</div>
+                </div>
+                <div class="title-current">
+                  <span id="stageTitleSeal" aria-hidden="true">候</span>
+                  <div>
+                    <small>当前称号</small>
+                    <strong id="stageTitleName">候选修士</strong>
+                    <p id="stageTitleSummary">完成第一次修炼后即可获得正式称号。</p>
+                  </div>
+                </div>
+                <div class="title-next">
+                  <span>下一称号</span>
+                  <strong id="stageTitleNext">洞府初启者</strong>
+                </div>
+                <div class="title-list" id="stageTitleList"></div>
+              </article>
+
+              <article class="panel hud-panel weekly-report-panel" id="weeklyReportPanel" data-pavilion-panel="weekly" aria-labelledby="weekly-report-title">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">周天传书</p>
+                    <h3 id="weekly-report-title">修炼周报</h3>
+                  </div>
+                  <div class="weekly-report-range" id="weeklyReportRange">本周</div>
+                </div>
+                <div class="weekly-report-core">
+                  <span id="weeklyReportSeal" aria-hidden="true">报</span>
+                  <div>
+                    <strong id="weeklyReportTitle">本周洞府待启</strong>
+                    <p id="weeklyReportLead">完成一次修炼后，这里会生成可复制的本周总结。</p>
+                  </div>
+                </div>
+                <div class="weekly-report-stats" id="weeklyReportStats"></div>
+                <pre class="weekly-report-copy" id="weeklyReportCopy">【灵动修炼录·本周修炼周报】本周尚未开篇，先完成一次 5 分钟调息吧。</pre>
+                <div class="weekly-report-actions">
+                  <button class="secondary-button" type="button" id="copyWeeklyReportButton">复制周报文案</button>
+                  <small id="weeklyReportHint">文案只根据当前本地记录生成。</small>
+                </div>
+              </article>
+
+              <article class="panel hud-panel treasures-panel" id="treasuresPanel" data-pavilion-panel="treasure">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">法宝器架</p>
+                    <h3>法宝陈列</h3>
+                  </div>
+                </div>
+                <div class="treasure-grid" id="treasureGrid"></div>
+              </article>
+
+              <article class="panel hud-panel fates-panel" id="fatesPanel" data-pavilion-panel="fate">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">机缘星谱</p>
+                    <h3>仙缘谱</h3>
+                  </div>
+                </div>
+                <div class="fate-toolbar" id="fateFilterList" aria-label="仙缘筛选"></div>
+                <p class="fate-summary" id="fateFilterSummary">全部仙缘收录于此。</p>
+                <div class="fate-empty" id="fateEmpty">当前筛选暂无仙缘。</div>
+                <div class="fate-grid" id="fateGrid"></div>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <nav class="action-dock" aria-label="洞府快捷入口">
+          <button class="nav-item is-active" type="button" data-view="dashboard" title="洞府"><span aria-hidden="true">府</span>洞府</button>
+          <button class="nav-item" type="button" data-view="checkin" title="入阵"><span aria-hidden="true">炼</span>入阵</button>
+          <button class="nav-item" type="button" data-view="records" title="卷宗"><span aria-hidden="true">卷</span>卷宗</button>
+          <button class="nav-item" type="button" data-view="profile" title="命格"><span aria-hidden="true">命</span>命格</button>
+        </nav>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="ascension-overlay" id="ascensionOverlay" aria-hidden="true">
+      <img src="./assets/images/ascension-ink-v5.png" alt="" />
+      <div class="ascension-copy">
+        <span id="ascensionSeal">破</span>
+        <strong id="ascensionTitle">破境成功</strong>
+        <p id="ascensionSummary">墨光入脉，新的境界已经落定。</p>
+      </div>
+    </div>
+
+    <dialog class="reward-dialog" id="rewardDialog">
+      <div class="settlement-bg" aria-hidden="true"></div>
+      <div class="reward-visual" aria-hidden="true">
+        <img class="reward-burst-art" src="./assets/images/reward-burst-v3.png" alt="" />
+        <div class="reward-ring"></div>
+        <div class="reward-burst" id="rewardBurst">修</div>
+      </div>
+      <div class="reward-copy">
+        <p class="eyebrow" id="rewardEyebrow">收功结算</p>
+        <h2 id="rewardTitle">收功完成</h2>
+        <p id="rewardSummary"></p>
+      </div>
+      <div class="reward-gains" id="rewardGains"></div>
+      <div class="reward-events" id="rewardEvents"></div>
+      <div class="reward-actions">
+        <button class="primary-button" type="button" id="closeRewardDialog">收纳机缘</button>
+        <button class="secondary-button" type="button" id="viewCollectionButton" hidden>入阁查看</button>
+        <button class="secondary-button" type="button" id="continuePracticeButton">再入阵</button>
+        <button class="ghost-button" type="button" id="viewRecordsButton">铭入卷宗</button>
+      </div>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
