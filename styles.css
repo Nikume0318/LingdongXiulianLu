@@ -7811,3 +7811,638 @@ body.ascension-active .protagonist-stage .character-art {
     transform: translateY(-50%);
   }
 }
+
+/* v3.14 final home: keep the cave as the main scene and move duties into a controlled drawer. */
+.cave-view {
+  overflow-x: clip;
+}
+
+.affairs-orb {
+  position: fixed;
+  right: clamp(18px, 3vw, 42px);
+  bottom: clamp(24px, 5vh, 58px);
+  z-index: 34;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 86px;
+  padding: 8px;
+  color: rgba(247, 240, 222, 0.94);
+  border: 1px solid rgba(220, 208, 176, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(239, 229, 207, 0.14), rgba(239, 229, 207, 0.045)),
+    rgba(7, 20, 19, 0.78);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 231, 0.16),
+    0 22px 50px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    border-color 220ms ease;
+}
+
+.affairs-orb span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(223, 190, 122, 0.42);
+  border-radius: 50%;
+  color: rgba(223, 190, 122, 0.96);
+  background: rgba(10, 28, 27, 0.72);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.affairs-orb strong {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.affairs-orb:hover {
+  border-color: rgba(223, 190, 122, 0.62);
+  transform: translateY(-3px);
+}
+
+body.has-overlay .affairs-orb,
+body.affairs-open .affairs-orb,
+body.character-setup-open .affairs-orb {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.affairs-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  opacity: 0;
+  visibility: hidden;
+  background:
+    radial-gradient(circle at 68% 42%, rgba(239, 229, 207, 0.07), transparent 28%),
+    rgba(1, 6, 6, 0.46);
+  backdrop-filter: blur(4px);
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
+}
+
+.affairs-panel {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  bottom: 18px;
+  z-index: 36;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(560px, calc(100vw - 36px));
+  padding: 16px;
+  color: rgba(247, 240, 222, 0.94);
+  border: 1px solid rgba(220, 208, 176, 0.2);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(239, 229, 207, 0.09), rgba(239, 229, 207, 0.035)),
+    rgba(5, 16, 16, 0.92);
+  box-shadow:
+    -32px 0 88px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(239, 229, 207, 0.08);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(calc(100% + 28px));
+  transition:
+    opacity 240ms ease,
+    visibility 240ms ease,
+    transform 300ms cubic-bezier(0.18, 0.8, 0.24, 1);
+}
+
+body.affairs-open .affairs-backdrop,
+body.affairs-open .affairs-panel {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.affairs-open .affairs-panel {
+  transform: translateX(0);
+}
+
+body.affairs-open .stage-bg,
+body.character-setup-open .stage-bg {
+  filter: saturate(0.62) contrast(0.94) brightness(0.5);
+}
+
+body.affairs-open .top-hud,
+body.affairs-open .cave-stage,
+body.character-setup-open .top-hud,
+body.character-setup-open .cave-stage {
+  filter: saturate(0.72) brightness(0.76);
+}
+
+.affairs-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 10px 14px;
+  border-bottom: 1px solid rgba(220, 208, 176, 0.16);
+}
+
+.affairs-heading h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.08;
+}
+
+.affairs-heading p:last-child {
+  max-width: 34em;
+  margin: 6px 0 0;
+  color: rgba(245, 239, 226, 0.68);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.affairs-scroll {
+  min-height: 0;
+  overflow: auto;
+  padding: 14px 4px 2px;
+  scrollbar-color: rgba(223, 190, 122, 0.48) rgba(239, 229, 207, 0.08);
+}
+
+.affairs-panel .novice-guide {
+  margin: 0 0 12px;
+}
+
+.affairs-panel .cave-hud,
+.affairs-panel .adventure-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  gap: 12px;
+}
+
+.affairs-panel .adventure-grid {
+  margin-top: 12px;
+}
+
+.affairs-panel .adventure-grid::before,
+.affairs-panel .cave-hud::before {
+  content: none;
+}
+
+.affairs-panel .hud-panel {
+  min-width: 0;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(239, 229, 207, 0.07),
+    0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+.affairs-panel .panel-header,
+.affairs-panel .dungeon-core,
+.affairs-panel .demon-core,
+.affairs-panel .story-core,
+.affairs-panel .realm-status {
+  gap: 10px;
+}
+
+.affairs-panel .realm-status img,
+.realm-badge-large,
+.realm-orb img {
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.affairs-collection-links {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 0 2px;
+  background:
+    linear-gradient(180deg, transparent, rgba(5, 16, 16, 0.94) 28%),
+    rgba(5, 16, 16, 0.74);
+}
+
+.character-setup {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
+}
+
+body.character-setup-open .character-setup {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.character-setup-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(223, 190, 122, 0.1), transparent 30%),
+    rgba(1, 6, 6, 0.72);
+  backdrop-filter: blur(9px);
+}
+
+.character-setup-panel {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100svh - 38px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid rgba(220, 208, 176, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(239, 229, 207, 0.12), rgba(239, 229, 207, 0.04)),
+    rgba(6, 18, 18, 0.94);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.54),
+    inset 0 1px 0 rgba(239, 229, 207, 0.09);
+}
+
+.character-setup-copy h2 {
+  margin: 2px 0 8px;
+  font-size: 40px;
+  line-height: 1.05;
+}
+
+.character-setup-copy p:last-child {
+  margin: 0;
+  color: rgba(245, 239, 226, 0.72);
+  line-height: 1.55;
+}
+
+.setup-character-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.setup-character-card {
+  display: grid;
+  grid-template-rows: minmax(220px, 1fr) auto;
+  gap: 8px;
+  min-width: 0;
+  min-height: 292px;
+  padding: 12px;
+  color: rgba(247, 240, 222, 0.88);
+  border: 1px solid rgba(220, 208, 176, 0.18);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at 50% 62%, rgba(223, 190, 122, 0.11), transparent 45%),
+    rgba(8, 22, 21, 0.82);
+  cursor: pointer;
+}
+
+.setup-character-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.setup-character-card span {
+  justify-self: center;
+  font-weight: 900;
+}
+
+.setup-character-card.is-active {
+  border-color: rgba(223, 190, 122, 0.66);
+  box-shadow:
+    inset 0 0 0 1px rgba(223, 190, 122, 0.16),
+    0 16px 36px rgba(0, 0, 0, 0.22);
+}
+
+.setup-nickname-field {
+  display: grid;
+  gap: 8px;
+  color: rgba(245, 239, 226, 0.76);
+  font-weight: 850;
+}
+
+.setup-nickname-field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  color: rgba(247, 240, 222, 0.94);
+  border: 1px solid rgba(220, 208, 176, 0.22);
+  border-radius: 8px;
+  background: rgba(3, 12, 12, 0.72);
+}
+
+.character-setup-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.ritual-stage,
+.reward-visual,
+.empty-state,
+.treasure-card,
+.fate-card {
+  overflow: hidden;
+}
+
+.ritual-stage img,
+.reward-burst-art,
+.empty-state img,
+.treasure-card img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.overlay-panel {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 981px) {
+  .cave-view {
+    padding-bottom: 42px;
+  }
+
+  .cave-stage {
+    min-height: min(720px, calc(100vh - 118px));
+  }
+
+  .daily-ritual-card {
+    margin-bottom: 22px;
+  }
+
+  body.affairs-open .action-dock,
+  body.character-setup-open .action-dock {
+    opacity: 0.36;
+    filter: saturate(0.58) brightness(0.72);
+  }
+
+  .affairs-panel {
+    width: min(560px, calc(100vw - 116px));
+  }
+
+  .affairs-panel .adventure-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 980px) {
+  .affairs-orb {
+    right: 18px;
+    bottom: 92px;
+    width: 66px;
+    height: 72px;
+  }
+
+  .affairs-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    max-height: min(82svh, 740px);
+    padding: 12px;
+    transform: translateY(calc(100% + 18px));
+  }
+
+  body.affairs-open .affairs-panel {
+    transform: translateY(0);
+  }
+
+  .affairs-heading {
+    padding: 8px 8px 12px;
+  }
+
+  .affairs-heading h2 {
+    font-size: 28px;
+  }
+
+  .affairs-scroll {
+    max-height: calc(82svh - 96px);
+    padding-bottom: 74px;
+  }
+
+  .affairs-collection-links {
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 720px) {
+  .cave-view {
+    padding: 10px 12px 126px;
+  }
+
+  .top-hud {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .top-hud .brand {
+    min-width: 0;
+  }
+
+  .top-hud .brand-mark {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .top-hud h1 {
+    font-size: 22px;
+    line-height: 1.1;
+  }
+
+  .top-hud > .ghost-button {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .hud-strip {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .hud-strip > div {
+    min-height: 54px;
+    padding: 7px;
+  }
+
+  .hud-strip strong {
+    font-size: 15px;
+    line-height: 1.22;
+  }
+
+  .hud-strip .stat-label {
+    font-size: 11px;
+  }
+
+  .cave-stage {
+    gap: 10px;
+  }
+
+  .protagonist-stage {
+    min-height: 334px;
+    padding: 28px 8px 6px;
+  }
+
+  .protagonist-stage .character-art {
+    width: min(266px, 76%);
+    max-height: 268px;
+    margin-top: 4px;
+  }
+
+  .avatar-realm-ring {
+    top: 42px;
+    width: 128px;
+    height: 128px;
+    margin-right: -64px;
+  }
+
+  .avatar-realm-ring span {
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+  }
+
+  .protagonist-stage .avatar-caption {
+    width: calc(100% - 16px);
+    padding: 10px;
+  }
+
+  .protagonist-stage .avatar-caption h3 {
+    font-size: 25px;
+  }
+
+  .daily-ritual-card {
+    margin-inline: auto;
+    margin-top: -150px;
+    padding: 14px;
+    position: relative;
+    z-index: 6;
+  }
+
+  .daily-ritual-card h3 {
+    max-width: calc(100% - 62px);
+    font-size: 30px;
+    line-height: 1.08;
+  }
+
+  .daily-ritual-card p:not(.eyebrow) {
+    max-width: calc(100% - 62px);
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .daily-ritual-card .scene-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .affairs-orb {
+    right: 14px;
+    bottom: 122px;
+    width: 54px;
+    height: 58px;
+  }
+
+  .affairs-orb span {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .affairs-orb strong {
+    font-size: 12px;
+  }
+
+  .affairs-panel {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 84svh;
+    border-radius: 8px 8px 0 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+  }
+
+  .affairs-scroll {
+    max-height: calc(84svh - 106px);
+  }
+
+  .affairs-panel .hud-panel {
+    padding: 14px;
+  }
+
+  .affairs-collection-links {
+    grid-template-columns: 1fr;
+  }
+
+  .character-setup {
+    padding: 12px;
+  }
+
+  .character-setup-panel {
+    width: min(100%, 420px);
+    padding: 14px;
+  }
+
+  .character-setup-copy h2 {
+    font-size: 30px;
+  }
+
+  .setup-character-choices {
+    gap: 8px;
+  }
+
+  .setup-character-card {
+    grid-template-rows: 150px auto;
+    min-height: 210px;
+    padding: 8px;
+  }
+
+  .setup-character-card img {
+    height: 150px;
+  }
+
+  .character-setup-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .reward-dialog {
+    max-height: calc(100svh - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .affairs-orb,
+  .affairs-backdrop,
+  .affairs-panel,
+  .character-setup,
+  .character-setup-panel {
+    transition: none !important;
+  }
+}

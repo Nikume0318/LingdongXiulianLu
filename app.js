@@ -169,6 +169,10 @@ let state = loadState();
 let selectedActivity = "run";
 let selectedFateFilter = "all";
 let selectedPavilionLayer = "report";
+let isAffairsOpen = false;
+let isCharacterSetupOpen = false;
+let setupCharacterGender = state.user.character.gender;
+let shouldShowInitialCharacterSetup = state.records.length === 0 && !state.user.character.nickname;
 let latestWeeklyReportText = "";
 let toastTimer;
 let ritualFeedbackTimer;
@@ -184,6 +188,17 @@ const elements = {
   navItems: document.querySelectorAll(".nav-item"),
   jumpButtons: document.querySelectorAll("[data-jump-view]"),
   closeOverlayButtons: document.querySelectorAll("[data-close-overlay]"),
+  openAffairsButton: document.querySelector("#openAffairsButton"),
+  closeAffairsButtons: document.querySelectorAll("[data-close-affairs]"),
+  affairsPanel: document.querySelector("#affairsPanel"),
+  affairsBackdrop: document.querySelector("#affairsBackdrop"),
+  affairsPavilionButtons: document.querySelectorAll("[data-affairs-pavilion-layer]"),
+  characterSetup: document.querySelector("#characterSetup"),
+  closeSetupButtons: document.querySelectorAll("[data-close-setup]"),
+  setupGenderButtons: document.querySelectorAll("[data-character-setup-gender]"),
+  setupNicknameInput: document.querySelector("#setupNicknameInput"),
+  confirmCharacterSetup: document.querySelector("#confirmCharacterSetup"),
+  skipCharacterSetup: document.querySelector("#skipCharacterSetup"),
   activityTypeGrid: document.querySelector("#activityTypeGrid"),
   practiceForm: document.querySelector("#practiceForm"),
   ritualStage: document.querySelector(".ritual-stage"),
@@ -437,6 +452,57 @@ function sanitizeNickname(value) {
 
 function getCharacterDisplayName() {
   return state.user.character.nickname || "校园修士";
+}
+
+function setAffairsOpen(open) {
+  isAffairsOpen = Boolean(open);
+  document.body.classList.toggle("affairs-open", isAffairsOpen);
+  elements.openAffairsButton?.setAttribute("aria-expanded", String(isAffairsOpen));
+  elements.affairsPanel?.setAttribute("aria-hidden", String(!isAffairsOpen));
+}
+
+function syncSetupGenderButtons() {
+  elements.setupGenderButtons.forEach((button) => {
+    const isActive = button.dataset.characterSetupGender === setupCharacterGender;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function setCharacterSetupOpen(open) {
+  isCharacterSetupOpen = Boolean(open);
+  document.body.classList.toggle("character-setup-open", isCharacterSetupOpen);
+  elements.characterSetup?.setAttribute("aria-hidden", String(!isCharacterSetupOpen));
+  if (isCharacterSetupOpen) {
+    setupCharacterGender = state.user.character.gender;
+    elements.setupNicknameInput.value = state.user.character.nickname;
+    syncSetupGenderButtons();
+    window.requestAnimationFrame(() => elements.setupNicknameInput?.focus());
+  }
+}
+
+function completeCharacterSetup(useDefault = false) {
+  const nickname = sanitizeNickname(useDefault ? "" : elements.setupNicknameInput?.value);
+  state.user.character.gender = characterProfiles[setupCharacterGender] ? setupCharacterGender : defaultState.user.character.gender;
+  state.user.character.nickname = nickname || "校园修士";
+  shouldShowInitialCharacterSetup = false;
+  saveState();
+  setCharacterSetupOpen(false);
+  render();
+  showToast("洞府化身已定，今日可以入阵修炼。");
+}
+
+function syncInitialCharacterSetup() {
+  if (shouldShowInitialCharacterSetup && document.body.dataset.activeView === "dashboard" && !isCharacterSetupOpen) {
+    setCharacterSetupOpen(true);
+  }
+}
+
+function openPavilionLayer(layer) {
+  selectedPavilionLayer = layer || "report";
+  setAffairsOpen(false);
+  switchView("profile");
+  window.requestAnimationFrame(() => updatePavilionLayer({ scroll: true, force: true }));
 }
 
 function getRealmInfo(cultivation = state.user.cultivation) {
@@ -1218,6 +1284,7 @@ function render() {
   renderRecords();
   updatePavilionLayer();
   updateRewardHint();
+  syncInitialCharacterSetup();
 }
 
 function renderWeeklyReport(weeklyReport) {
@@ -1780,6 +1847,9 @@ function captureRecentCollectionUnlocks(progression) {
 
 function switchView(viewId) {
   const target = viewId || "dashboard";
+  if (target !== "dashboard") {
+    setAffairsOpen(false);
+  }
   document.body.dataset.activeView = target;
   document.body.classList.toggle("has-overlay", target !== "dashboard");
   document.body.classList.remove("is-harvesting");
@@ -1913,6 +1983,7 @@ function usePill() {
 function showRewardDialog(reward, progression, options = {}) {
   const feedback = buildRewardFeedback(reward, progression, options);
 
+  setAffairsOpen(false);
   clearRewardSequenceTimers();
   elements.rewardDialog.classList.remove("is-breakthrough", "is-unlock", "is-normal", "is-entering", "is-settlement-staged", "is-gains-ready", "is-events-ready", "is-hud-ready");
   elements.rewardDialog.classList.add(`is-${feedback.status}`);
@@ -2174,6 +2245,8 @@ function resetDemoData() {
   recentCollectionUnlocks.treasureIds.clear();
   recentCollectionUnlocks.fateIds.clear();
   selectedPavilionLayer = "report";
+  setupCharacterGender = defaultState.user.character.gender;
+  shouldShowInitialCharacterSetup = true;
   state = structuredClone(defaultState);
   saveState();
   render();
@@ -2192,6 +2265,35 @@ function bindEvents() {
 
   elements.closeOverlayButtons.forEach((button) => {
     button.addEventListener("click", () => switchView("dashboard"));
+  });
+
+  elements.openAffairsButton?.addEventListener("click", () => {
+    setAffairsOpen(!isAffairsOpen);
+  });
+
+  elements.closeAffairsButtons.forEach((button) => {
+    button.addEventListener("click", () => setAffairsOpen(false));
+  });
+
+  elements.affairsPavilionButtons.forEach((button) => {
+    button.addEventListener("click", () => openPavilionLayer(button.dataset.affairsPavilionLayer));
+  });
+
+  elements.setupGenderButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const gender = button.dataset.characterSetupGender;
+      if (!characterProfiles[gender]) {
+        return;
+      }
+      setupCharacterGender = gender;
+      syncSetupGenderButtons();
+    });
+  });
+
+  elements.confirmCharacterSetup?.addEventListener("click", () => completeCharacterSetup(false));
+  elements.skipCharacterSetup?.addEventListener("click", () => completeCharacterSetup(true));
+  elements.closeSetupButtons.forEach((button) => {
+    button.addEventListener("click", () => completeCharacterSetup(true));
   });
 
   elements.characterGenderButtons.forEach((button) => {
@@ -2285,7 +2387,18 @@ function bindEvents() {
   elements.copyWeeklyReportButton.addEventListener("click", copyWeeklyReport);
   elements.resetDemoButton.addEventListener("click", resetDemoData);
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && document.body.dataset.activeView !== "dashboard" && !elements.rewardDialog.open) {
+    if (event.key !== "Escape") {
+      return;
+    }
+    if (isCharacterSetupOpen) {
+      completeCharacterSetup(true);
+      return;
+    }
+    if (isAffairsOpen) {
+      setAffairsOpen(false);
+      return;
+    }
+    if (document.body.dataset.activeView !== "dashboard" && !elements.rewardDialog.open) {
       switchView("dashboard");
     }
   });

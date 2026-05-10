@@ -53,16 +53,6 @@
                 <span id="protagonistRealmSeal">炼</span>
               </div>
               <img class="character-art" id="characterArt" src="./assets/images/cultivator-male-v5.png" alt="大学生修士立绘" />
-              <div class="character-choice-strip" aria-label="主角命形选择">
-                <button class="character-choice is-active" type="button" data-character-gender="male" aria-pressed="true">
-                  <img src="./assets/images/cultivator-male-v5.png" alt="" />
-                  <span>男修</span>
-                </button>
-                <button class="character-choice" type="button" data-character-gender="female" aria-pressed="false">
-                  <img src="./assets/images/cultivator-female-v5.png" alt="" />
-                  <span>女修</span>
-                </button>
-              </div>
               <div class="avatar-caption">
                 <p class="eyebrow">命格化身</p>
                 <h3 id="characterName">校园修士</h3>
@@ -82,6 +72,31 @@
                 <button class="primary-button primary-action" type="button" data-jump-view="checkin">入阵修炼</button>
                 <button class="secondary-button" type="button" data-jump-view="records">翻阅卷宗</button>
               </div>
+            </div>
+
+            <aside class="realm-orb realm-orb-secondary">
+              <img id="dashboardRealmBadgeImage" src="./assets/images/realm-qi-v3.png" alt="当前境界徽章" />
+              <small>灵脉共鸣</small>
+            </aside>
+          </section>
+
+          <button class="affairs-orb" type="button" id="openAffairsButton" aria-controls="affairsPanel" aria-expanded="false">
+            <span aria-hidden="true">务</span>
+            <strong>事务</strong>
+          </button>
+
+          <div class="affairs-backdrop" id="affairsBackdrop" data-close-affairs></div>
+          <aside class="affairs-panel" id="affairsPanel" aria-label="洞府事务" aria-hidden="true">
+            <div class="affairs-heading">
+              <div>
+                <p class="eyebrow">洞府事务</p>
+                <h2>洞府事务</h2>
+                <p>任务、灵脉、宗门、试炼与篇章都收在这里，主页只留给主角与今日入阵。</p>
+              </div>
+              <button class="ghost-button close-affairs" type="button" id="closeAffairsButton" data-close-affairs>收起</button>
+            </div>
+
+            <div class="affairs-scroll">
               <div class="novice-guide" id="noviceGuide" aria-label="入门引路">
                 <div class="novice-guide-copy">
                   <span id="noviceGuideSeal" aria-hidden="true">引</span>
@@ -94,139 +109,139 @@
                 <ol class="novice-steps" id="noviceGuideSteps"></ol>
                 <button class="secondary-button guide-action" type="button" id="noviceGuideAction">开始第一次入阵</button>
               </div>
+
+              <section class="cave-hud" aria-label="洞府主界面">
+                <article class="panel hud-panel realm-panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">境界灵脉</p>
+                      <h3>境界灵脉</h3>
+                    </div>
+                  </div>
+                  <div class="realm-status">
+                    <img id="realmPanelBadgeImage" src="./assets/images/realm-qi-v3.png" alt="境界徽章" />
+                    <div>
+                      <span class="stat-label">下一次破境</span>
+                      <strong id="realmProgressText">0 / 100 修为</strong>
+                    </div>
+                  </div>
+                  <div class="progress-track">
+                    <span id="realmProgressBar"></span>
+                  </div>
+                  <div class="resource-grid">
+                    <div>
+                      <span class="stat-label">本周历练</span>
+                      <strong id="weeklyCountValue">0 次</strong>
+                      <small id="weeklyMinutesValue">累计 0 分钟</small>
+                    </div>
+                    <div>
+                      <span class="stat-label">仙缘</span>
+                      <strong id="fateCountValue">0 / 9</strong>
+                      <small>机缘收录</small>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="panel hud-panel quest-panel scroll-panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">今日卷令</p>
+                      <h3>今日卷轴</h3>
+                    </div>
+                  </div>
+                  <div class="task-list" id="taskList"></div>
+                </article>
+              </section>
+
+              <section class="adventure-grid" aria-label="洞府历练入口">
+                <article class="panel hud-panel sect-panel" aria-labelledby="sect-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">宗门周常</p>
+                      <h3 id="sect-title">宗门委托</h3>
+                    </div>
+                    <div class="sect-rank">
+                      <span id="sectRankValue">外门弟子</span>
+                      <strong id="sectContributionValue">0 贡献</strong>
+                    </div>
+                  </div>
+                  <div class="progress-track sect-progress">
+                    <span id="sectProgressBar"></span>
+                  </div>
+                  <p class="system-copy" id="sectSummary">完成本周委托可提升宗门贡献，形成更稳定的修炼节奏。</p>
+                  <div class="sect-mission-list" id="sectMissionList"></div>
+                </article>
+
+                <article class="panel hud-panel dungeon-panel" aria-labelledby="dungeon-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">云阶副本</p>
+                      <h3 id="dungeon-title">云阶试炼</h3>
+                    </div>
+                    <div class="dungeon-grade" id="dungeonGradeValue">未入阵</div>
+                  </div>
+                  <div class="dungeon-core">
+                    <div class="dungeon-seal" aria-hidden="true">阵</div>
+                    <div>
+                      <strong id="dungeonNameValue">云阶试炼</strong>
+                      <p id="dungeonSummary">完成宗门委托即可推进本周副本清剿。</p>
+                    </div>
+                  </div>
+                  <div class="progress-track dungeon-progress">
+                    <span id="dungeonProgressBar"></span>
+                  </div>
+                  <div class="dungeon-stage-list" id="dungeonStageList"></div>
+                </article>
+
+                <article class="panel hud-panel demon-panel" aria-labelledby="demon-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">心魔试炼</p>
+                      <h3 id="demon-title">今日心魔</h3>
+                    </div>
+                    <div class="demon-threat" id="demonThreatValue">低威胁</div>
+                  </div>
+                  <div class="demon-core">
+                    <div class="demon-orb" aria-hidden="true">心</div>
+                    <div>
+                      <strong id="demonNameValue">拖延心魔</strong>
+                      <p id="demonSummary">入定一次即可压制今日心魔。</p>
+                    </div>
+                  </div>
+                  <div class="progress-track demon-progress">
+                    <span id="demonProgressBar"></span>
+                  </div>
+                  <div class="demon-trial-list" id="demonTrialList"></div>
+                </article>
+
+                <article class="panel hud-panel story-panel" aria-labelledby="story-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">篇章进度</p>
+                      <h3 id="story-title">修炼篇章</h3>
+                    </div>
+                    <div class="story-tag" id="storyTagValue">序章</div>
+                  </div>
+                  <div class="story-core">
+                    <div class="story-seal" aria-hidden="true">章</div>
+                    <div>
+                      <strong id="storyNameValue">洞府初启</strong>
+                      <p id="storySummary">完成第一次修炼，开启你的校园修仙旅程。</p>
+                    </div>
+                  </div>
+                  <div class="progress-track story-progress">
+                    <span id="storyProgressBar"></span>
+                  </div>
+                  <div class="story-chapter-list" id="storyChapterList"></div>
+                </article>
+              </section>
+
+              <div class="affairs-collection-links" aria-label="命格阁快捷入口">
+                <button class="secondary-button" type="button" data-affairs-pavilion-layer="title">入阁看称号</button>
+                <button class="secondary-button" type="button" data-affairs-pavilion-layer="fate">入阁看仙缘</button>
+              </div>
             </div>
-
-            <aside class="realm-orb realm-orb-secondary">
-              <img id="dashboardRealmBadgeImage" src="./assets/images/realm-qi-v3.png" alt="当前境界徽章" />
-              <small>灵脉共鸣</small>
-            </aside>
-          </section>
-
-          <section class="cave-hud" aria-label="洞府主界面">
-            <article class="panel hud-panel realm-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">境界灵脉</p>
-                  <h3>境界灵脉</h3>
-                </div>
-              </div>
-              <div class="realm-status">
-                <img id="realmPanelBadgeImage" src="./assets/images/realm-qi-v3.png" alt="境界徽章" />
-                <div>
-                  <span class="stat-label">下一次破境</span>
-                  <strong id="realmProgressText">0 / 100 修为</strong>
-                </div>
-              </div>
-              <div class="progress-track">
-                <span id="realmProgressBar"></span>
-              </div>
-              <div class="resource-grid">
-                <div>
-                  <span class="stat-label">本周历练</span>
-                  <strong id="weeklyCountValue">0 次</strong>
-                  <small id="weeklyMinutesValue">累计 0 分钟</small>
-                </div>
-                <div>
-                  <span class="stat-label">仙缘</span>
-                  <strong id="fateCountValue">0 / 9</strong>
-                  <small>机缘收录</small>
-                </div>
-              </div>
-            </article>
-
-            <article class="panel hud-panel quest-panel scroll-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">今日卷令</p>
-                  <h3>今日卷轴</h3>
-                </div>
-              </div>
-              <div class="task-list" id="taskList"></div>
-            </article>
-          </section>
-
-          <section class="adventure-grid" aria-label="洞府历练入口">
-            <article class="panel hud-panel sect-panel" aria-labelledby="sect-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">宗门周常</p>
-                  <h3 id="sect-title">宗门委托</h3>
-                </div>
-                <div class="sect-rank">
-                  <span id="sectRankValue">外门弟子</span>
-                  <strong id="sectContributionValue">0 贡献</strong>
-                </div>
-              </div>
-              <div class="progress-track sect-progress">
-                <span id="sectProgressBar"></span>
-              </div>
-              <p class="system-copy" id="sectSummary">完成本周委托可提升宗门贡献，形成更稳定的修炼节奏。</p>
-              <div class="sect-mission-list" id="sectMissionList"></div>
-            </article>
-
-            <article class="panel hud-panel dungeon-panel" aria-labelledby="dungeon-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">云阶副本</p>
-                  <h3 id="dungeon-title">云阶试炼</h3>
-                </div>
-                <div class="dungeon-grade" id="dungeonGradeValue">未入阵</div>
-              </div>
-              <div class="dungeon-core">
-                <div class="dungeon-seal" aria-hidden="true">阵</div>
-                <div>
-                  <strong id="dungeonNameValue">云阶试炼</strong>
-                  <p id="dungeonSummary">完成宗门委托即可推进本周副本清剿。</p>
-                </div>
-              </div>
-              <div class="progress-track dungeon-progress">
-                <span id="dungeonProgressBar"></span>
-              </div>
-              <div class="dungeon-stage-list" id="dungeonStageList"></div>
-            </article>
-
-            <article class="panel hud-panel demon-panel" aria-labelledby="demon-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">心魔试炼</p>
-                  <h3 id="demon-title">今日心魔</h3>
-                </div>
-                <div class="demon-threat" id="demonThreatValue">低威胁</div>
-              </div>
-              <div class="demon-core">
-                <div class="demon-orb" aria-hidden="true">心</div>
-                <div>
-                  <strong id="demonNameValue">拖延心魔</strong>
-                  <p id="demonSummary">入定一次即可压制今日心魔。</p>
-                </div>
-              </div>
-              <div class="progress-track demon-progress">
-                <span id="demonProgressBar"></span>
-              </div>
-              <div class="demon-trial-list" id="demonTrialList"></div>
-            </article>
-
-            <article class="panel hud-panel story-panel" aria-labelledby="story-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">篇章进度</p>
-                  <h3 id="story-title">修炼篇章</h3>
-                </div>
-                <div class="story-tag" id="storyTagValue">序章</div>
-              </div>
-              <div class="story-core">
-                <div class="story-seal" aria-hidden="true">章</div>
-                <div>
-                  <strong id="storyNameValue">洞府初启</strong>
-                  <p id="storySummary">完成第一次修炼，开启你的校园修仙旅程。</p>
-                </div>
-              </div>
-              <div class="progress-track story-progress">
-                <span id="storyProgressBar"></span>
-              </div>
-              <div class="story-chapter-list" id="storyChapterList"></div>
-            </article>
-          </section>
+          </aside>
         </section>
 
         <section class="view game-view overlay-view ritual-view" id="checkin" aria-labelledby="checkin-title">
@@ -556,6 +571,35 @@
         </nav>
       </main>
     </div>
+
+    <section class="character-setup" id="characterSetup" aria-label="开局立命" aria-hidden="true">
+      <div class="character-setup-backdrop" data-close-setup></div>
+      <div class="character-setup-panel">
+        <div class="character-setup-copy">
+          <p class="eyebrow">开局立命</p>
+          <h2>先定下你的洞府化身</h2>
+          <p>选择一个主角命形，取一个短道号。之后可在命格阁继续修改。</p>
+        </div>
+        <div class="setup-character-choices" aria-label="选择主角命形">
+          <button class="setup-character-card is-active" type="button" data-character-setup-gender="male" aria-pressed="true">
+            <img src="./assets/images/cultivator-male-v5.png" alt="" />
+            <span>男修</span>
+          </button>
+          <button class="setup-character-card" type="button" data-character-setup-gender="female" aria-pressed="false">
+            <img src="./assets/images/cultivator-female-v5.png" alt="" />
+            <span>女修</span>
+          </button>
+        </div>
+        <label class="setup-nickname-field">
+          修士道号
+          <input id="setupNicknameInput" type="text" maxlength="8" placeholder="校园修士" />
+        </label>
+        <div class="character-setup-actions">
+          <button class="primary-button" type="button" id="confirmCharacterSetup">进入洞府</button>
+          <button class="ghost-button" type="button" id="skipCharacterSetup">使用默认</button>
+        </div>
+      </div>
+    </section>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
